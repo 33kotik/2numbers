@@ -1,0 +1,1 @@
+/usr/bin/c++ -g CMakeFiles/var3_course.dir/main.cpp.o -o var3_course 
