@@ -22,6 +22,10 @@ double q(double x) {
 double f(double x) {
     return exp(2 * x) / x;
 }
+
+double dy(double x) {
+    return 2 * exp(2 * x);
+}
 //double q(double x){
 //    return 3/x;
 //}
@@ -34,7 +38,6 @@ vector<double> step_size;
 double h;
 
 
-
 vector<double> accuracy;
 //vector<double> step_size;
 vector<double> hp;
@@ -42,65 +45,54 @@ vector<double> hp;
 vector<double> xerror;
 
 
-
-double f(double x, double y) {
-    return (y + x * x * cos(x)) / x;
+double f(double x, double y, double z) {
+    return z;
 }
 
-void matlab_output() {
-    freopen("output.txt", "w+", stdout);
-    cout << step_size.size() << endl;
-    for (int i = 0; i < step_size.size(); i++)
-        cout << step_size[i] << " ";
-    cout << endl;
-//    for (int i = 0; i < delta.size(); i++)
-//        cout << delta[i] << " ";
-//    cout << endl;
-//    for (int i = 0; i < accuracy.size(); i++)
-//        cout << accuracy[i] << " ";
-//    cout << endl;
-    for (int i = 0; i < xerror.size(); i++)
-        cout << xerror[i] << " ";
-    cout << endl;
-
-    /*
-     cout << X.size() << endl;
-     for (int i = 0; i < X.size(); i++)
-         cout << setprecision(4) << X[i] << "   ";
-     cout << endl;
-     for (int i = 0; i < Y.size(); i++)
-         cout << setprecision(4) << Y[i] << "  ";
-     cout << endl;
-     for (int i = 0; i < Y.size(); i++)
-         cout << setprecision(4) << solution(X[i]) << "   ";
-     cout << endl;
-     int k = 0;
-     for (int i = 0; i < Y.size(); i++) {
-         if (abs(solution(X[i]) - Y[i]) > abs(solution(X[k]) - Y[k]))
-             k = i;
-         cout << setprecision(4) << solution(X[i]) - Y[i] << "  ";
-     }*/
-//    fclose("outp")
+double g(double x, double y, double z) {
+    return (2 * x + 1) * z / x - 3 * y / x + exp(2 * x) / x;
 }
+
+//void matlab_output() {
+//    freopen("output.txt", "w+", stdout);
+//    cout << step_size.size() << endl;
+//    for (int i = 0; i < step_size.size(); i++)
+//        cout << step_size[i] << " ";
+//    cout << endl;
+//
+//}
 
 void RungeKutta4(int n, double delta = 0) {
     h = (b - a) / n;
     vector<double> X;
     vector<double> Y;
+    vector<double> Z;
 //    cerr << h << endl;
 //    X.push_back(a);
     for (int i = 0; i <= n; i++) {
         X.push_back(a + i * h);
     }
-    Y.push_back(a + delta);
+    Y.push_back(solutoin(a) + delta);
+    Z.push_back(dy(a));
     double k1, k2, k3, k4;
+    double l1, l2, l3, l4;
     for (int i = 0; i < n; i++) {
-        k1 = f(X[i], Y[i]);
-        k2 = f(X[i] + h / 2, Y[i] + k1 * h / 2);
-        k3 = f(X[i] + h / 2, Y[i] + k2 * h / 2);
-        k4 = f(X[i] + h, Y[i] + k3 * h);
-        Y.push_back(Y[i] + (k1 + 2 * k2 + 2 * k3 + k4) * h / 6);
+        k1 = h * f(X[i], Y[i], Z[i]);
+        l1 = h * g(X[i], Y[i], Z[i]);
+        k2 = h * f(X[i] + h / 2, Y[i] + k1 / 2, Z[i] + l1 / 2);
+        l2 = h * g(X[i] + h / 2, Y[i] + k1 / 2, Z[i] + l1 / 2);
+        k3 = h * f(X[i] + h / 2, Y[i] + k2 / 2, Z[i] + l2 / 2);
+        l3 = h * g(X[i] + h / 2, Y[i] + k2 / 2, Z[i] + l2 / 2);
+        k4 = h * f(X[i] + h, Y[i] + k3, Z[i] + l3);
+        l4 = h * g(X[i] + h, Y[i] + k3, Z[i] + l3);
+        Y.push_back(Y[i] + (k1 + 2 * k2 + 2 * k3 + k4)  / 6);
+        Z.push_back(Z[i] + (l1 + 2 * l2 + 2 * l3 + l4)  / 6);
 //        cout<<setprecision(10)<<k1<<" "<<k2<<" "<<k3<<" "<<k4<<" "<<(Y[i] + (k1 + 2 * k2 + 2 * k3 + k4) * h / 6)<<endl;
+
+    }
+    cout << Y.size() << endl;
+    for (int i = 0; i < Y.size(); i++) {
+        cout << Y[i] << " ";
     }
 
 }
@@ -170,6 +162,7 @@ void finite_difference_metod(int n, double delta = 0) {
 }
 
 int main() {
-    std::cout << "Hello, World!" << std::endl;
+    finite_difference_metod(4);
+    RungeKutta4(4);
     return 0;
 }

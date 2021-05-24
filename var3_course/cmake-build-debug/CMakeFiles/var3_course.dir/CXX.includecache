@@ -1,0 +1,20 @@
+#IncludeRegexLine: ^[ 	]*[#%][ 	]*(include|import)[ 	]*[<"]([^">]+)([">])
+
+#IncludeRegexScan: ^.*$
+
+#IncludeRegexComplain: ^$
+
+#IncludeRegexTransform: 
+
+/home/alex4/Desktop/2numbers/var3_course/main.cpp
+iostream
+-
+iostream
+-
+bits/stdc++.h
+-
+math.h
+-
+GL/glut.h
+-
+
