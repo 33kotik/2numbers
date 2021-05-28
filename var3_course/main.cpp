@@ -2,7 +2,7 @@
 #include <iostream>
 #include <bits/stdc++.h>
 #include <math.h>
-#include <GL/glut.h>
+//#include <GL/glut.h>
 //#include "GLh"
 using namespace std;
 
@@ -41,8 +41,14 @@ double h;
 vector<double> accuracy;
 //vector<double> step_size;
 vector<double> hp;
-//vector<double> delta;
-vector<double> xerror;
+vector<double> delta;
+vector<double> runge_error;
+vector<double> finite_error;
+vector<double> x_runge_error;
+vector<double> x_finite_error;
+//vector<double> ;
+
+
 
 
 double f(double x, double y, double z) {
@@ -85,16 +91,27 @@ void RungeKutta4(int n, double delta = 0) {
         l3 = h * g(X[i] + h / 2, Y[i] + k2 / 2, Z[i] + l2 / 2);
         k4 = h * f(X[i] + h, Y[i] + k3, Z[i] + l3);
         l4 = h * g(X[i] + h, Y[i] + k3, Z[i] + l3);
-        Y.push_back(Y[i] + (k1 + 2 * k2 + 2 * k3 + k4)  / 6);
-        Z.push_back(Z[i] + (l1 + 2 * l2 + 2 * l3 + l4)  / 6);
+        Y.push_back(Y[i] + (k1 + 2 * k2 + 2 * k3 + k4) / 6);
+        Z.push_back(Z[i] + (l1 + 2 * l2 + 2 * l3 + l4) / 6);
 //        cout<<setprecision(10)<<k1<<" "<<k2<<" "<<k3<<" "<<k4<<" "<<(Y[i] + (k1 + 2 * k2 + 2 * k3 + k4) * h / 6)<<endl;
 
     }
-    cout << Y.size() << endl;
-    for (int i = 0; i < Y.size(); i++) {
-        cout << Y[i] << " ";
-    }
+//    for (int i = 0; i < Y.size(); i++) {
+//    cout << Y.size() << endl;
+    double error = 0;
+    double x_error = 0;
 
+    for (int i = 0; i < Y.size(); i++) {
+        error = max(error, abs(Y[i] - solutoin(X[i])));
+        if (error==abs(Y[i] - solutoin(X[i]))){
+            x_error=X[i];
+        }
+    }
+    runge_error.push_back(error);
+    x_runge_error.push_back(x_error);
+//    for (int i = 0; i < Y.size(); i++) {
+//        cout << Y[i] << " ";
+//    }
 }
 
 void finite_difference_metod(int n, double delta = 0) {
@@ -134,35 +151,67 @@ void finite_difference_metod(int n, double delta = 0) {
     for (int i = n; i >= 0; i--) {
         y[i] = (F[i] - C[i] * y[i + 1]) / B[i];
     }
-    {
-//        //        freopen("output.txt", "w+", stdout);
-        cout << X.size() << endl;
-        for (int i = 0; i < X.size(); i++) {
-            cout << X[i] << " ";
-        }
-        cout << endl;
-        for (int i = 0; i < y.size(); i++) {
-            cout << y[i] << " ";
-        }
-        cout << endl;
-        for (int i = 0; i <= n; i++) {
-            cout << abs(solutoin(X[i]) - y[i]) << " ";
-        }
-        cout << endl;
-    }
+//    {
+////        //        freopen("output.txt", "w+", stdout);
+//        cout << X.size() << endl;
+//        for (int i = 0; i < X.size(); i++) {
+//            cout << X[i] << " ";
+//        }
+//        cout << endl;
+//        for (int i = 0; i < y.size(); i++) {
+//            cout << y[i] << " ";
+//        }
+//        cout << endl;
+//        for (int i = 0; i <= n; i++) {
+//            cout << abs(solutoin(X[i]) - y[i]) << " ";
+//        }
+//        cout << endl;
+//    }
     double error = 0;
+    double x_error =a;
     for (int i = 0; i <= n; i++) {
         error = max(error, abs(y[i] - solutoin(X[i])));
+        if (error==abs(y[i] - solutoin(X[i]))){
+            x_error=X[i];
+        }
     }
-    errors.push_back(error);
-    split_count.push_back(delta);
+    finite_error.push_back(error);
+    x_finite_error.push_back(x_error);
+//    split_count.push_back(delta);
     step_size.push_back(h);
 
 
 }
 
 int main() {
-    finite_difference_metod(4);
-    RungeKutta4(4);
+    freopen("output.txt", "w+", stdout);
+//    for (double d = 0.1; d > 1e-10; d = d / 10) {
+    for (int n=2;n<1e6;n=n*2){
+//        double n = 100;
+        finite_difference_metod(n);
+        RungeKutta4(n);
+//        delta.push_back(d);
+    }
+    cout << finite_error.size() << endl;
+    for (int i = 0; i < finite_error.size(); i++) {
+//        cout << finite_error[i] << " ";
+        cout << x_finite_error[i] << " ";
+        //        cout<<abs(finite_error[i]-finite_error[i-1])/(4-1)<<" ";
+    }
+    cout << endl;
+    for (int i = 0; i < runge_error.size(); i++) {
+//        cout << runge_error[i] << " ";
+        cout << x_runge_error[i] << " ";
+        //        cout<<abs(runge_error[i]-runge_error[i-1])/(16-1)<<" ";
+    }
+    cout << endl;
+//    for (int i = 0; i < delta.size(); i++) {
+//        cout << delta[i] << " ";
+//    }
+
+    for (int i = 0; i < step_size.size(); i++) {
+        cout << step_size[i] << " ";
+    }
+
     return 0;
 }

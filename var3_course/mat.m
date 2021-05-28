@@ -1,20 +1,20 @@
 
 file = fopen('cmake-build-debug/output.txt',"r+");
 % for i=1:n
-inp=fscanf(file,'%f ');
+inp=fscanf(file,'%f');
 n=inp(1:2);
-x1=inp(2  : n+1);
-y1=inp(n+2  : 2*n+1);
-
-y12=inp(2*n+2 :3 *n+1); 
-start=3*n+1;
-n2=inp(start+1:start+ 2);
-x2=inp(start+ 2  :start+ n2+1);
-y2=inp(start+n2+2  :start+ 2*n2+1);
-y3=inp(start+2*n2+2 :start+ 3 *n2+1); 
+y1=inp(2  : n+1);
+y2=inp(n+2  : 2*n+1);
+x=inp(2*n+2 :3 *n+1); 
+% start=3*n+1;cd
+% n2=inp(start+1:start+ 2);
+% x2=inp(start+ 2  :start+ n2+1);
+% y2=inp(start+n2+2  :start+ 2*n2+1);
+% y3=inp(start+2*n2+2 :start+ 3 *n2+1); 
 % erorrs=inp(3*n+2 :4 *n+1);
-plot(x1,y1,x2,y2,x2,y3)
+% plot(x1,y1,x2,y2,x2,y3)
 
+semilogx(x,y1,x,y2)
 % loglog(x,y_ac,x,hp);
 %  plot(x1,y12,x2,y3);
 
@@ -25,11 +25,11 @@ plot(x1,y1,x2,y2,x2,y3)
 %  x_bis = [1e-10,1e-0];
 % y_bis = [1e-10,1e-0];
 % title("n=100")
-% loglog(x,y1,x,y2);
-legend('n=2','n=4');
+% % % loglog(x,y1,x,y2);
+legend('конечных разностей','рунге-кутты');
 %  loglog(x1,y2,x_bis,y_bis)
-% ylabel("ошибка")
- xlabel("шаг")
+ ylabel("координата")
+ xlabel("размер шага")
 %   semilogx(x1,y1)
 %   xlabel("заданная точность")
 %   ylabel("log2 число итераций ")
